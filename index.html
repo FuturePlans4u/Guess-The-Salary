@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guess the Salary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f9fbff;
+      border-radius: 12px;
+      border: 1px solid #dde7f3;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    input {
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      border: none;
+      background: #2d6cdf;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1f57b8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #eef5ff;
+    }
+
+    .small {
+      font-size: 14px;
+      color: #555;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Guess the Salary</h1>
+
+    <div id="startScreen">
+      <div class="card">
+        <label for="playerName">Enter your name:</label>
+        <input type="text" id="playerName" placeholder="Your name" />
+
+        <button onclick="startGame()">Start Game</button>
+
+        <p class="small">
+          You will see a career and guess its yearly salary.
+          You get points based on how close you are.
+        </p>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="hidden">
+      <div class="scoreboard">
+        <div id="roundInfo">Round 1 of 10</div>
+        <div id="scoreInfo">Score: 0</div>
+      </div>
+
+      <div class="card">
+        <h2 id="careerName">Career</h2>
+        <p id="careerDesc"></p>
+
+        <label for="salaryGuess">What do you think this career earns per year?</label>
+        <input type="number" id="salaryGuess" placeholder="Enter salary guess" />
+
+        <button onclick="submitGuess()">Submit Guess</button>
+
+        <div id="resultBox" class="result hidden"></div>
+        <button id="nextButton" class="hidden" onclick="nextRound()">Next Round</button>
+      </div>
+    </div>
+
+    <div id="endScreen" class="hidden">
+      <div class="card">
+        <h2 id="finalMessage">Game Over</h2>
+        <p id="finalScore"></p>
+        <p id="playerSummary"></p>
+        <button onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guess the Salary</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #eef4ff, #f8fbff);
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+      padding: 28px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #f9fbff;
+      border: 1px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    input, select {
+      border: 1px solid #c9d5ea;
+      background: #fff;
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary {
+      background: #64748b;
+    }
+
+    .secondary:hover {
+      background: #475569;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+
+    .pill {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      padding: 10px 14px;
+      border-radius: 999px;
+    }
+
+    .career-title {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 6px 0 10px;
+    }
+
+    .career-meta {
+      color: #475569;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      line-height: 1.6;
+    }
+
+    .small {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .category-list {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .category-tag {
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      color: #374151;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .summary-box {
+      margin-top: 15px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Guess the Salary</h1>
+    <p class="subtitle">Career exploration game with category choices, random rounds, and score tracking.</p>
+
+    <div id="startScreen">
+      <div class="card">
+        <div class="grid">
+          <div>
+            <label for="playerName">Player Name</label>
+            <input type="text" id="playerName" placeholder="Enter your name" />
+          </div>
+
+          <div>
+            <label for="categorySelect">Category</label>
+            <select id="categorySelect"></select>
+          </div>
+
+          <div>
+            <label for="roundSelect">Number of Rounds</label>
+            <select id="roundSelect">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="scoreMode">Scoring Style</label>
+            <select id="scoreMode">
+              <option value="standard" selected>Standard</option>
+              <option value="tough">Tough</option>
+              <option value="forgiving">Forgiving</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="startGame()">Start Game</button>
+
+        <div class="summary-box">
+          <strong>Total careers loaded:</strong> <span id="careerCount"></span><br>
+          <strong>Available categories:</strong>
+          <div id="categoryTags" class="category-list"></div>
+        </div>
+
+        <p class="small">
+          Salaries with ranges like $35k-$50k are scored using the midpoint, but the full range is still shown in the answer.
+        </p>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="hidden">
+      <div class="scoreboard">
+        <div class="pill" id="roundInfo">Round 1 of 10</div>
+        <div class="pill" id="scoreInfo">Score: 0</div>
+        <div class="pill" id="categoryInfo">Category: All</div>
+      </div>
+
+      <div class="card">
+        <div class="career-title" id="careerName">Career</div>
+        <div class="career-meta" id="careerMeta">Category</div>
+        <p id="careerDesc"></p>
+
+        <label for="salaryGuess">What do you think this career earns per year?</label>
+        <input type="number" id="salaryGuess" placeholder="Example: 65000" />
+
+        <button onclick="submitGuess()">Submit Guess</button>
+        <button id="nextButton" class="secondary hidden" onclick="nextRound()">Next Round</button>
+
+        <div id="resultBox" class="result hidden"></div>
+      </div>
+    </div>
+
+    <div id="endScreen" class="hidden">
+      <div class="card">
+        <h2 id="finalMessage">Game Over</h2>
+        <p id="finalScore"></p>
+        <p id="finalBreakdown"></p>
+        <p id="playerSummary"></p>
+        <button onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rawCareerData = `
+Retail Sales Associate|$30,000|High School|Helps customers find products, answer questions, and complete purchases in stores
+Fast Food Worker|$28,000|High School|Prepares food, takes orders, and serves customers at quick-service restaurants
+Cashier|$29,000|High School|Processes customer payments and handles transactions at stores or restaurants
+Warehouse Worker|$38,000|High School|Packs, sorts, and moves products in storage and shipping facilities
+Delivery Driver|$42,000|High School|Transports packages or food from businesses to customers
+Security Guard|$36,000|High School|Monitors buildings or areas to prevent theft, vandalism, or safety issues
+Hotel Front Desk Clerk|$33,000|High School|Checks guests in and out and assists with reservations or questions
+Construction Laborer|$42,000|High School|Assists skilled workers building roads, buildings, and other structures
+Janitor / Custodian|$35,000|High School|Cleans and maintains buildings such as schools, offices, or hospitals
+Landscaping Worker|$34,000|High School|Maintains lawns, plants, and outdoor spaces for homes or businesses
+Farm Worker|$32,000|High School|Plants, harvests, and cares for crops or livestock on farms
+House Painter|$41,000|High School|Applies paint and finishes to homes and buildings
+Garbage Truck Helper|$44,000|High School|Collects and loads trash or recycling from homes and businesses
+Call Center Representative|$38,000|High School|Helps customers solve problems or answer questions by phone
+Assembly Line Worker|$40,000|High School|Works in factories assembling products in a production process
+Manufacturing Operator|$45,000|High School|Runs machines that produce goods in factories
+Bus Driver|$46,000|High School|Safely transports passengers on scheduled routes
+Taxi / Ride Share Driver|$35,000|High School|Drives passengers to destinations using services like Uber or Lyft
+Park Ranger Assistant|$38,000|High School|Helps maintain parks and assists visitors with information and safety
+Library Assistant|$34,000|High School|Helps organize books and assists visitors in libraries
+Electrician|$62,000|Technical/Trade|Installs and repairs electrical wiring and power systems in buildings
+Plumber|$60,000|Technical/Trade|Installs and repairs pipes for water, gas, and drainage systems
+HVAC Technician|$58,000|Technical/Trade|Installs and repairs heating, ventilation, and air conditioning systems
+Welder|$52,000|Technical/Trade|Joins metal parts together using heat and specialized tools
+Diesel Mechanic|$55,000|Technical/Trade|Repairs large diesel engines used in trucks and heavy equipment
+Automotive Technician|$48,000|Technical/Trade|Diagnoses and repairs problems in cars and trucks
+Wind Turbine Technician|$60,000|Technical/Trade|Maintains and repairs wind turbines used to generate electricity
+Elevator Installer|$85,000|Technical/Trade|Installs and repairs elevators, escalators, and moving walkways
+Aircraft Mechanic|$70,000|Technical/Trade|Inspects and repairs airplanes to ensure safe operation
+Industrial Maintenance Technician|$65,000|Technical/Trade|Repairs and maintains machines used in factories
+CNC Machinist|$55,000|Technical/Trade|Programs and operates machines that cut precise metal parts
+Pipefitter|$63,000|Technical/Trade|Installs piping systems used in factories and power plants
+Surveying Technician|$52,000|Technical/Trade|Helps measure land to determine boundaries and locations for construction
+Firefighter|$57,000|Technical/Trade|Responds to fires and emergencies to protect lives and property
+Police Officer|$61,000|Technical/Trade|Enforces laws, investigates crimes, and protects communities
+Dental Hygienist|$75,000|Technical/Trade|Cleans teeth and helps patients maintain good oral health
+Radiologic Technician|$63,000|Technical/Trade|Performs medical imaging such as X-rays for doctors
+Physical Therapy Assistant|$58,000|Technical/Trade|Helps patients recover from injuries through guided exercises
+Respiratory Therapist|$65,000|Technical/Trade|Treats patients with breathing or lung problems
+Licensed Practical Nurse (LPN)|$55,000|Technical/Trade|Provides basic nursing care under the supervision of doctors or RNs
+Accountant|$72,000|College Degree|Manages financial records and prepares taxes and financial reports
+Financial Analyst|$82,000|College Degree|Studies financial data to help businesses or investors make decisions
+Marketing Manager|$85,000|College Degree|Plans advertising and promotional campaigns for products or services
+Human Resources Manager|$95,000|College Degree|Manages hiring, training, and employee relations in companies
+Software Developer|$105,000|College Degree|Creates and maintains computer programs and applications
+Data Analyst|$75,000|College Degree|Analyzes data to find patterns and help organizations make decisions
+Data Scientist|$110,000|College Degree|Uses advanced statistics and programming to analyze large datasets
+Cybersecurity Analyst|$100,000|College Degree|Protects computer systems and networks from hackers
+Mechanical Engineer|$88,000|College Degree|Designs machines and mechanical systems
+Civil Engineer|$85,000|College Degree|Designs roads, bridges, buildings, and infrastructure
+Electrical Engineer|$95,000|College Degree|Designs electrical systems and electronic devices
+Architect|$82,000|College Degree|Designs buildings and oversees construction projects
+Urban Planner|$78,000|College Degree|Develops plans for cities, neighborhoods, and land use
+High School Teacher|$64,000|College Degree|Educates students in specific subjects at secondary schools
+College Professor|$92,000|College Degree|Teaches college students and conducts research in academic fields
+School Counselor|$63,000|College Degree|Helps students with academic planning and personal challenges
+Registered Nurse|$80,000|College Degree|Provides medical care and monitors patients in healthcare settings
+Nurse Practitioner|$110,000|College Degree|Diagnoses illnesses and provides treatment similar to a doctor
+Pharmacist|$125,000|College Degree|Dispenses medications and advises patients about proper use
+Physical Therapist|$92,000|College Degree|Helps patients recover movement after injuries or illness
+Occupational Therapist|$89,000|College Degree|Helps people regain daily living skills after injuries or disabilities
+Veterinarian|$100,000|College Degree|Diagnoses and treats illnesses in animals
+Psychologist|$90,000|College Degree|Studies behavior and helps people with mental health challenges
+Social Worker|$55,000|College Degree|Assists individuals and families dealing with difficult life situations
+Lawyer|$120,000|College Degree|Provides legal advice and represents clients in court
+Judge|$140,000|College Degree|Presides over court cases and ensures laws are applied fairly
+Journalist|$55,000|College Degree|Researches and reports news for media outlets
+Graphic Designer|$58,000|College Degree|Creates visual designs for advertising, websites, and publications
+Interior Designer|$60,000|College Degree|Plans and decorates interior spaces in homes or buildings
+Event Planner|$52,000|College Degree|Organizes events such as weddings, conferences, or festivals
+Real Estate Agent|$65,000|Specialized|Helps people buy, sell, or rent homes and property
+Insurance Underwriter|$78,000|Specialized|Evaluates risk to determine insurance coverage and pricing
+Supply Chain Manager|$95,000|Specialized|Oversees the movement of products from manufacturers to customers
+Logistics Coordinator|$60,000|Specialized|Organizes transportation and delivery of goods
+Construction Manager|$95,000|Specialized|Oversees building projects and construction teams
+Project Manager|$92,000|Specialized|Plans and leads projects to ensure they are completed on time and budget
+Industrial Designer|$75,000|Specialized|Designs products such as tools, furniture, or electronics
+Environmental Scientist|$70,000|Specialized|Studies environmental problems and develops solutions
+Agricultural Scientist|$72,000|Specialized|Researches ways to improve farming and food production
+Geologist|$85,000|Specialized|Studies the Earth, rocks, and natural resources
+Army Infantry Soldier|$35k-$50k|Military|Engages in ground combat and protects national security
+Navy Sailor|$35k-$55k|Military|Serves aboard ships or submarines to support naval operations
+Air Force Technician|$40k-$65k|Military|Maintains aircraft and equipment for military missions
+Marine Corps Infantry|$35k-$50k|Military|Conducts combat operations on land and sea
+Military Police|$45k-$65k|Military|Enforces laws and maintains order on military bases
+Combat Medic|$40k-$60k|Military|Provides emergency medical care to soldiers in the field
+Army Helicopter Pilot|$80k-$120k|Military|Flies helicopters for transport, rescue, or combat missions
+Air Force Pilot|$90k-$140k|Military|Operates military aircraft for defense and missions
+Military Intelligence Analyst|$60k-$95k|Military|Analyzes information to support military strategy
+Cyber Operations Specialist|$70k-$110k|Military|Defends military networks from cyber threats
+Physician|$220,000|High Paying|Diagnoses and treats illnesses in patients
+Surgeon|$260,000|High Paying|Performs operations to treat injuries or diseases
+Anesthesiologist|$285,000|High Paying|Administers anesthesia and monitors patients during surgery
+Orthodontist|$230,000|High Paying|Straightens teeth using braces and dental devices
+Dentist|$170,000|High Paying|Diagnoses and treats problems related to teeth and oral health
+CEO|$200,000+|High Paying|Leads and makes major decisions for a company or organization
+Investment Banker|$150,000|High Paying|Helps companies raise money and manage financial deals
+Airline Pilot|$180,000|High Paying|Flies commercial airplanes transporting passengers or cargo
+Petroleum Engineer|$130,000|High Paying|Designs methods to extract oil and gas from underground
+AI Engineer|$140,000|High Paying|Develops artificial intelligence systems and machine learning technology
+Marine Biologist|$65,000|Science|Studies ocean animals, plants, and ecosystems.
+Forensic Scientist|$62,000|Science|Analyzes evidence from crime scenes.
+Meteorologist|$70,000|Science|Studies weather patterns and predicts storms.
+Wildlife Biologist|$63,000|Science|Researches animals and their habitats.
+Oceanographer|$72,000|Science|Studies oceans, currents, and marine life.
+Geophysicist|$105,000|Science|Studies Earth's physical properties like gravity and magnetism.
+Volcanologist|$95,000|Science|Studies volcanoes and volcanic eruptions.
+Hydrologist|$88,000|Science|Studies water systems such as rivers and groundwater.
+Entomologist|$75,000|Science|Studies insects and their behavior.
+Conservation Scientist|$69,000|Science|Protects forests and natural resources.
+Game Developer|$95,000|Technology|Designs and programs video games.
+UX Designer|$92,000|Technology|Designs websites and apps to be easy and enjoyable to use.
+Cloud Engineer|$118,000|Technology|Builds and maintains cloud computer systems.
+AI Trainer|$85,000|Technology|Teaches artificial intelligence systems how to interpret data.
+Ethical Hacker|$110,000|Technology|Tests computer systems to find security weaknesses.
+Robotics Engineer|$104,000|Technology|Designs and builds robots.
+Drone Pilot|$72,000|Technology|Operates drones for photography, mapping, or inspections.
+Data Engineer|$115,000|Technology|Builds systems that store and process data.
+Cybercrime Investigator|$88,000|Technology|Investigates online crimes and hacking incidents.
+IT Forensics Analyst|$95,000|Technology|Recovers digital evidence from computers.
+Genetic Counselor|$86,000|Medical|Helps patients understand inherited health risks.
+Biomedical Engineer|$92,000|Medical|Designs medical devices and equipment.
+Perfusionist|$135,000|Medical|Operates heart-lung machines during surgery.
+Medical Illustrator|$78,000|Medical|Creates scientific illustrations for medicine and research.
+Orthotist / Prosthetist|$78,000|Medical|Designs artificial limbs and braces.
+Sleep Technologist|$63,000|Medical|Studies sleep disorders and monitors sleep tests.
+Art Therapist|$60,000|Medical|Uses art to help patients with emotional healing.
+Music Therapist|$58,000|Medical|Uses music to help patients improve mental health.
+Speech Pathologist|$82,000|Medical|Helps people improve speech and communication.
+Sports Medicine Specialist|$95,000|Medical|Treats athletic injuries.
+Foley Artist|$60,000|Creative|Creates sound effects for movies and television.
+Storyboard Artist|$65,000|Creative|Draws visual plans for movies or animation scenes.
+Voice Actor|$70,000|Creative|Performs voices for animation, video games, or commercials
+Set Designer|$62,000|Creative|Designs backgrounds and sets for movies or theater
+Film Editor|$68,000|Creative|Edits video footage to create movies or shows
+Animator|$78,000|Creative|Creates moving images for films or games
+Tattoo Artist|$75,000|Creative|Designs and applies permanent tattoos
+Fashion Buyer|$70,000|Creative|Selects clothing for retail stores to sell
+Color Specialist|$55,000|Creative|Chooses colors for products, branding, or film
+Food Stylist|$62,000|Creative|Prepares food to look appealing for photos or advertisements
+Park Naturalist|$50,000|Outdoor|Educates visitors about wildlife and nature
+Search and Rescue Technician|$52,000|Outdoor|Helps locate and rescue missing people
+Whitewater Rafting Guide|$38,000|Outdoor|Leads rafting trips on rivers
+Fishing Guide|$40,000|Outdoor|Helps people catch fish on guided trips
+Storm Chaser|$55,000|Outdoor|Tracks severe storms for research or media
+Mountain Guide|$42,000|Outdoor|Leads climbers on mountain expeditions
+Wildland Firefighter|$54,000|Outdoor|Fights forest and wildfire outbreaks
+Arborist|$55,000|Outdoor|Maintains and cares for trees
+Game Warden|$70,000|Outdoor|Enforces hunting and wildlife laws
+Outdoor Adventure Instructor|$40,000|Outdoor|Teaches outdoor survival or adventure skills
+Underwater Welder|$90,000|Engineering|Welds metal structures underwater
+Elevator Inspector|$90,000|Engineering|Ensures elevators operate safely
+Bridge Inspector|$75,000|Engineering|Inspects bridges for safety issues
+Wind Turbine Climber|$65,000|Engineering|Repairs wind turbines high above ground
+Railroad Engineer|$78,000|Engineering|Operates trains and manages rail operations
+Explosives Technician|$72,000|Engineering|Uses explosives for construction or demolition
+Boilermaker|$70,000|Engineering|Builds and repairs large industrial boilers
+Precision Instrument Maker|$65,000|Engineering|Creates delicate scientific instruments
+Locksmith|$50,000|Engineering|Installs and repairs locks and security systems
+Blacksmith|$45,000|Engineering|Shapes metal using heat and tools
+Food Scientist|$78,000|Culinary|Studies food ingredients and safety
+Flavor Chemist|$95,000|Culinary|Creates artificial flavors for foods and drinks
+Chocolate Maker|$50,000|Culinary|Produces and designs chocolate products
+Brewmaster|$70,000|Culinary|Develops and brews craft beer
+Food Safety Inspector|$65,000|Culinary|Ensures food is safe for consumption
+Personal Chef|$62,000|Culinary|Cooks meals for private clients
+Restaurant Critic|$60,000|Culinary|Reviews restaurants and food quality
+Butcher|$45,000|Culinary|Prepares and cuts meat for sale
+Baker|$38,000|Culinary|Produces breads, pastries, and desserts
+Cake Decorator|$36,000|Culinary|Designs decorative cakes
+Actuary|$125,000|Business|Uses math to predict financial risks
+Auctioneer|$60,000|Business|Conducts auctions selling goods or property
+Fundraiser|$68,000|Business|Raises money for charities or organizations
+Brand Strategist|$90,000|Business|Develops company branding and marketing identity
+Talent Agent|$85,000|Business|Represents entertainers and negotiates contracts
+Professional Organizer|$55,000|Business|Helps people declutter homes or offices
+Life Coach|$60,000|Business|Helps clients achieve personal goals
+Market Research Analyst|$74,000|Business|Studies consumer behavior
+Product Tester|$45,000|Business|Evaluates products before they reach the market
+Mystery Shopper|$30,000|Business|Secretly evaluates businesses for service quality
+Air Traffic Controller|$125,000|Surprise!|Directs airplanes to avoid collisions
+Court Reporter|$75,000|Surprise!|Records everything said during court trials
+Crime Scene Cleaner|$55,000|Surprise!|Cleans hazardous scenes after emergencies
+Professional Gamer|$60,000|Surprise!|Competes in video game tournaments
+Voice Coach|$55,000|Surprise!|Trains singers and public speakers
+Sommelier|$65,000|Surprise!|Expert who selects and pairs wines
+Funeral Director|$75,000|Surprise!|Organizes funeral services and helps families
+Private Investigator|$58,000|Surprise!|Conducts investigations for clients
+Bodyguard|$72,000|Surprise!|Protects high-profile people from threats or danger
+Stunt Performer|$75,000|Surprise!|Performs dangerous scenes in movies
+Theme Park Designer|$92,000|Wild Card|Designs rides and attractions
+Toy Designer|$70,000|Wild Card|Creates new toys and games
+Professional Photographer|$55,000|Wild Card|Captures images for media or clients
+Travel Writer|$52,000|Wild Card|Writes about destinations and travel experiences
+Aquarium Curator|$60,000|Wild Card|Manages exhibits and marine animals in aquariums
+Zoo Keeper|$40,000|Wild Card|Cares for animals in zoos
+Boat Captain|$85,000|Wild Card|Operates commercial boats or ships
+Flight Instructor|$78,000|Wild Card|Teaches people how to fly aircraft
+Drone Surveyor|$72,000|Wild Card|Uses drones to map land or construction sites
+Sports Scout|$50,000|Wild Card|Evaluates athletes for professional teams
+    `;
+
+    function parseSalaryValue(salaryText) {
+      const cleaned = salaryText.trim().toLowerCase().replace(/\s/g, "");
+
+      if (cleaned.includes("-")) {
+        const parts = cleaned.split("-");
+        const first = parsePart(parts[0]);
+        const second = parsePart(parts[1]);
+        return Math.round((first + second) / 2);
+      }
+
+      if (cleaned.endsWith("+")) {
+        return parsePart(cleaned.replace("+", ""));
+      }
+
+      return parsePart(cleaned);
+    }
+
+    function parsePart(part) {
+      const normalized = part.replace(/\$/g, "").replace(/,/g, "");
+      if (normalized.endsWith("k")) {
+        return parseFloat(normalized) * 1000;
+      }
+      return parseFloat(normalized);
+    }
+
+    const careers = rawCareerData
+      .trim()
+      .split("\n")
+      .map(line => {
+        const [name, salaryText, category, description] = line.split("|");
+        return {
+          name: name.trim(),
+          salaryText: salaryText.trim(),
+          salaryValue: parseSalaryValue(salaryText),
+          category: category.trim(),
+          description: description.trim()
+        };
+      });
+
+    let playerName = "";
+    let score = 0;
+    let round = 0;
+    let totalRounds = 10;
+    let selectedCategory = "All";
+    let currentCareer = null;
+    let gameCareers = [];
+    let scoringStyle = "standard";
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function getCategories() {
+      return ["All", ...new Set(careers.map(c => c.category))].sort((a, b) => {
+        if (a === "All") return -1;
+        if (b === "All") return 1;
+        return a.localeCompare(b);
+      });
+    }
+
+    function populateCategoryOptions() {
+      const categories = getCategories();
+      const select = document.getElementById("categorySelect");
+      const tags = document.getElementById("categoryTags");
+
+      select.innerHTML = "";
+      tags.innerHTML = "";
+
+      categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        select.appendChild(option);
+
+        if (category !== "All") {
+          const tag = document.createElement("span");
+          tag.className = "category-tag";
+          tag.textContent = `${category} (${careers.filter(c => c.category === category).length})`;
+          tags.appendChild(tag);
+        }
+      });
+
+      document.getElementById("careerCount").textContent = careers.length;
+    }
+
+    function getFilteredCareers() {
+      if (selectedCategory === "All") return careers;
+      return careers.filter(c => c.category === selectedCategory);
+    }
+
+    function startGame() {
+      playerName = document.getElementById("playerName").value.trim() || "Player";
+      selectedCategory = document.getElementById("categorySelect").value;
+      totalRounds = Number(document.getElementById("roundSelect").value);
+      scoringStyle = document.getElementById("scoreMode").value;
+
+      const filtered = getFilteredCareers();
+
+      if (filtered.length === 0) {
+        alert("That category has no careers loaded.");
+        return;
+      }
+
+      if (totalRounds > filtered.length) {
+        totalRounds = filtered.length;
+      }
+
+      score = 0;
+      round = 0;
+      gameCareers = shuffle(filtered).slice(0, totalRounds);
+
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("endScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+      document.getElementById("categoryInfo").textContent = `Category: ${selectedCategory}`;
+
+      loadRound();
+    }
+
+    function loadRound() {
+      currentCareer = gameCareers[round];
+
+      document.getElementById("roundInfo").textContent = `Round ${round + 1} of ${totalRounds}`;
+      document.getElementById("scoreInfo").textContent = `Score: ${score}`;
+      document.getElementById("careerName").textContent = currentCareer.name;
+      document.getElementById("careerMeta").textContent = `${currentCareer.category} • Salary hidden until you guess`;
+      document.getElementById("careerDesc").textContent = currentCareer.description;
+      document.getElementById("salaryGuess").value = "";
+      document.getElementById("resultBox").classList.add("hidden");
+      document.getElementById("nextButton").classList.add("hidden");
+    }
+
+    function getPoints(diff) {
+      const scoringTable = {
+        standard: [
+          { max: 0, points: 10, text: "Exact! You nailed it." },
+          { max: 5000, points: 8, text: "Very close!" },
+          { max: 10000, points: 6, text: "Close!" },
+          { max: 20000, points: 4, text: "Not bad." },
+          { max: Infinity, points: 1, text: "Not even in the parking lot." }
+        ],
+        tough: [
+          { max: 0, points: 10, text: "Exact! Respect." },
+          { max: 3000, points: 8, text: "Very close!" },
+          { max: 7000, points: 6, text: "Close!" },
+          { max: 15000, points: 3, text: "Decent guess." },
+          { max: Infinity, points: 0, text: "That guess needs adult supervision." }
+        ],
+        forgiving: [
+          { max: 0, points: 10, text: "Exact! You crushed it." },
+          { max: 7000, points: 8, text: "Very close!" },
+          { max: 15000, points: 6, text: "Close!" },
+          { max: 30000, points: 4, text: "Not bad." },
+          { max: Infinity, points: 2, text: "Well... at least you tried." }
+        ]
+      };
+
+      const rules = scoringTable[scoringStyle];
+      return rules.find(rule => diff <= rule.max);
+    }
+
+    function submitGuess() {
+      const guessInput = document.getElementById("salaryGuess").value;
+      const guess = Number(guessInput);
+
+      if (!guessInput || guess <= 0) {
+        alert("Please enter a real salary guess.");
+        return;
+      }
+
+      const actual = currentCareer.salaryValue;
+      const diff = Math.abs(guess - actual);
+      const result = getPoints(diff);
+
+      score += result.points;
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.innerHTML = `
+        <strong>${result.text}</strong><br><br>
+        Your guess: <strong>$${guess.toLocaleString()}</strong><br>
+        Correct salary: <strong>${currentCareer.salaryText}</strong><br>
+        Scoring value used: <strong>$${actual.toLocaleString()}</strong><br>
+        Difference: <strong>$${diff.toLocaleString()}</strong><br>
+        Points earned: <strong>${result.points}</strong>
+      `;
+
+      resultBox.classList.remove("hidden");
+      document.getElementById("scoreInfo").textContent = `Score: ${score}`;
+      document.getElementById("nextButton").classList.remove("hidden");
+    }
+
+    function nextRound() {
+      round++;
+      if (round >= totalRounds) {
+        endGame();
+      } else {
+        loadRound();
+      }
+    }
+
+    function endGame() {
+      document.getElementById("gameScreen").classList.add("hidden");
+      document.getElementById("endScreen").classList.remove("hidden");
+
+      const maxScore = totalRounds * 10;
+      const percent = Math.round((score / maxScore) * 100);
+
+      document.getElementById("finalMessage").textContent = `Great job, ${playerName}!`;
+      document.getElementById("finalScore").textContent = `Your final score is ${score} out of ${maxScore}.`;
+      document.getElementById("finalBreakdown").textContent = `Category played: ${selectedCategory} • Rounds: ${totalRounds} • Accuracy score: ${percent}%`;
+
+      let summary = "";
+      if (percent >= 85) {
+        summary = "You know salaries alarmingly well. Either you're brilliant or secretly payroll.";
+      } else if (percent >= 65) {
+        summary = "Solid job. You have a pretty good feel for career pay.";
+      } else if (percent >= 40) {
+        summary = "Not bad. A few of those careers clearly tried to humble you.";
+      } else {
+        summary = "That was rough, but rough can still be educational. Chaos with a lesson.";
+      }
+
+      document.getElementById("playerSummary").textContent = summary;
+    }
+
+    function restartGame() {
+      document.getElementById("playerName").value = "";
+      document.getElementById("startScreen").classList.remove("hidden");
+      document.getElementById("gameScreen").classList.add("hidden");
+      document.getElementById("endScreen").classList.add("hidden");
+    }
+
+    populateCategoryOptions();
+  </script>
+</body>
+</html>
